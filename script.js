@@ -1,8 +1,53 @@
-const DISCORD_USER_ID = "416887610233847820"; 
-const LANYARD_URL = `https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`;
+// --- CONFIGURATION ---
+const PROFILES = {
+    byte: {
+        name: "BYTE",
+        pronouns: "HE/HIM",
+        vibe: "Quiet & cozy. Staying in my own little bubble.",
+        mainImg: "./assets/images/byte-sunset.jpg",
+        images: [
+            "./assets/images/byte-dark.jpg",
+            "./assets/images/byte-camera.jpg",
+            "./assets/images/byte-flex.jpg",
+            "./assets/images/byte-room.jpg"
+        ],
+        thoughts: [
+            "\"Silence is not empty, it's full of answers.\"",
+            "\"Collect moments, not things.\"",
+            "\"Normality is a paved road: comfortable, but no flowers grow.\""
+        ],
+        accent: "#C774E8",
+        discordId: "416887610233847820"
+    },
+    friend: {
+        name: "FRIEND NAME",
+        pronouns: "THEY/THEM",
+        vibe: "Always up for chaos and coffee. Living fast.",
+        mainImg: "./assets/images/friend-main.jpg", // Change this!
+        images: [
+            "./assets/images/friend-1.jpg",
+            "./assets/images/friend-2.jpg"
+        ],
+        thoughts: [
+            "\"Coffee first, questions later.\"",
+            "\"Chaos is a ladder.\"",
+            "\"Stay hungry, stay foolish.\""
+        ],
+        accent: "#43b581", // Green accent for friend
+        discordId: "YOUR_FRIENDS_ID_HERE" // Change this!
+    }
+};
 
-// --- 1. LANYARD STATUS & KLOK (Behouden) ---
+let currentProfileKey = "byte";
+let currentGalleryIndex = 0;
+let currentThoughtIndex = 0;
+
+// --- CORE FUNCTIONS ---
+
 async function updateStatus() {
+    const profile = PROFILES[currentProfileKey];
+    const LANYARD_URL = `https://api.lanyard.rest/v1/users/${profile.discordId}`;
+    
     try {
         const response = await fetch(LANYARD_URL);
         const json = await response.json();
@@ -26,27 +71,19 @@ async function updateStatus() {
             if (text) {
                 text.classList.add('fade-out');
                 setTimeout(() => {
-                    // --- SPOTIFY LOGICA ---
                     if (data.listening_to_spotify && data.spotify) {
-                        text.textContent = `Listening to ${data.spotify.song || data.spotify.track} by ${data.spotify.artist}`;
-                        
+                        text.textContent = `Listening to ${data.spotify.song} by ${data.spotify.artist}`;
                         if (statusBox) {
-                            // Achtergrond instellen
                             statusBox.style.backgroundImage = `linear-gradient(rgba(30, 27, 36, 0.9), rgba(30, 27, 36, 0.9)), url('${data.spotify.album_art_url}')`;
                             statusBox.style.backgroundSize = 'cover';
-                            
-                            // NIEUW: Maak de box klikbaar
                             statusBox.classList.add('is-listening');
-                            statusBox.onclick = () => {
-                                window.open(`https://open.spotify.com/track/${data.spotify.track_id}`, '_blank');
-                            };
+                            statusBox.onclick = () => window.open(`https://open.spotify.com/track/${data.spotify.track_id}`, '_blank');
                         }
                     } else {
-                        // --- GEEN SPOTIFY ---
                         if (statusBox) {
                             statusBox.style.backgroundImage = 'none';
                             statusBox.classList.remove('is-listening');
-                            statusBox.onclick = null; // Verwijder de klik-functie
+                            statusBox.onclick = null;
                         }
                         const custom = data.activities.find(a => a.type === 4);
                         text.textContent = (custom && custom.state) ? `"${custom.state}"` : "Expert at doing nothing.";
@@ -62,7 +99,7 @@ function updateClock() {
     const now = new Date();
     const options24 = { timeZone: 'Europe/Amsterdam', hour12: false, hour: '2-digit', minute: '2-digit' };
     const options12 = { timeZone: 'Europe/Amsterdam', hour12: true, hour: '2-digit', minute: '2-digit' };
-    const time24 = new Intl.DateTimeFormat('nl-NL', options24).format(now);
+    const time24 = new Intl.DateTimeFormat('en-GB', options24).format(now);
     const time12 = new Intl.DateTimeFormat('en-US', options12).format(now);
     const clock24 = document.getElementById('clock-24');
     const clock12 = document.getElementById('clock-12');
@@ -70,95 +107,66 @@ function updateClock() {
     if (clock12) clock12.textContent = time12;
 }
 
-// --- 2. NIEUW: GALLERY SLIDESHOW ---
-// Pas deze lijst aan met je eigen foto's!
-const galleryImages = [
-    "./assets/images/byte-dark.jpg",
-    "./assets/images/byte-camera.jpg",
-    "./assets/images/byte-flex.jpg",
-    "./assets/images/byte-room.jpg" 
-];
-let currentGalleryIndex = 0;
-const galleryTarget = document.getElementById('gallery-target');
-
 function cycleGallery() {
-    if (!galleryTarget || galleryImages.length <= 1) return;
+    const galleryTarget = document.getElementById('gallery-target');
+    const images = PROFILES[currentProfileKey].images;
+    if (!galleryTarget || images.length <= 1) return;
 
-    // Fade out
     galleryTarget.classList.add('fade-out');
-
-    // Wacht tot de fade-out klaar is (matcht CSS 0.5s)
     setTimeout(() => {
-        // Volgende index, of terug naar 0
-        currentGalleryIndex = (currentGalleryIndex + 1) % galleryImages.length;
-        // Verander de bron van de afbeelding
-        galleryTarget.src = galleryImages[currentGalleryIndex];
-        
-        // Zorg dat de afbeelding geladen is voordat we fade-in doen
-        galleryTarget.onload = () => {
-            galleryTarget.classList.remove('fade-out');
-        };
+        currentGalleryIndex = (currentGalleryIndex + 1) % images.length;
+        galleryTarget.src = images[currentGalleryIndex];
+        galleryTarget.onload = () => galleryTarget.classList.remove('fade-out');
     }, 500);
 }
 
-// --- 3. NIEUW: THOUGHTS CYCLE ---
-// Pas deze lijst aan met je favoriete quotes of gedachten!
-const thoughtList = [
-    "\"Silence is not empty, it's full of answers.\"",
-    "\"Collect moments, not things.\"",
-    "\"Protect your peace like it’s a physical treasure.\"",
-    "\"Normality is a paved road: comfortable to walk, but no flowers grow on it.\"",
-    "\"The soul usually knows what to do to heal itself. The challenge is to silence the mind.\"",
-    "\"Everything you’ve ever wanted is on the other side of fear.\"",
-    "\"Don't decrease the goal, increase the effort.\"",
-    "\"Growth is uncomfortable because you’ve never been here before.\"",
-    "\"Be the person you needed when you were younger.\"",
-    "\"Your direction is more important than your speed.\"",
-    "\"If you think you are too small to make a difference, try sleeping with a mosquito.\"",
-    "\"Life is short. Smile while you still have teeth.\"",
-    "\"Reality is a nice place, but I wouldn't want to live there.\"",
-    "\"Be yourself; everyone else is already taken.\"",
-    "\"I’m not lazy, I’m just on energy saving mode.\"",
-    "\"We suffer more often in imagination than in reality.\"",
-    "\"The sun is a daily reminder that we too can rise again from the darkness.\"",
-    "\"To live is the rarest thing in the world. Most people exist, that is all.\"",
-    "\"You cannot pour from an empty cup. Take care of yourself first.\"",
-    "\"In a world where you can be anything, be kind.\""
-];
-let currentThoughtIndex = 0;
-const quoteTarget = document.getElementById('quote-target');
-
 function cycleThoughts() {
-    if (!quoteTarget || thoughtList.length <= 1) return;
+    const quoteTarget = document.getElementById('quote-target');
+    const thoughts = PROFILES[currentProfileKey].thoughts;
+    if (!quoteTarget || thoughts.length <= 1) return;
 
-    // Fade out
     quoteTarget.classList.add('fade-out');
-
-    // Wacht tot de fade-out klaar is (matcht CSS 0.5s)
     setTimeout(() => {
-        // Volgende index, of terug naar 0
-        currentThoughtIndex = (currentThoughtIndex + 1) % thoughtList.length;
-        // Verander de tekst
-        quoteTarget.textContent = thoughtList[currentThoughtIndex];
-        
-        // Fade in
+        currentThoughtIndex = (currentThoughtIndex + 1) % thoughts.length;
+        quoteTarget.textContent = thoughts[currentThoughtIndex];
         quoteTarget.classList.remove('fade-out');
     }, 500);
 }
 
-// --- START EN TIMERS ---
-// Start Lanyard & Klok
+// --- PROFILE SWITCHER ---
+
+function switchProfile() {
+    currentProfileKey = (currentProfileKey === "byte") ? "friend" : "byte";
+    const data = PROFILES[currentProfileKey];
+
+    // Update Text
+    document.getElementById('profile-name').textContent = data.name;
+    document.getElementById('profile-pronouns').textContent = data.pronouns;
+    document.getElementById('profile-vibe').textContent = data.vibe;
+    document.getElementById('quote-author').textContent = `— ${data.name.charAt(0).toUpperCase() + data.name.slice(1).toLowerCase()}`;
+    
+    // Update Main Profile Image
+    document.getElementById('profile-main-img').src = data.mainImg;
+
+    // Reset Gallery & Thoughts
+    currentGalleryIndex = 0;
+    currentThoughtIndex = 0;
+    document.getElementById('gallery-target').src = data.images[0];
+    document.getElementById('quote-target').textContent = data.thoughts[0];
+
+    // Update Accent Color
+    document.documentElement.style.setProperty('--accent-glow', data.accent);
+
+    // Refresh Discord Status
+    updateStatus();
+}
+
+// --- INITIALIZE ---
+document.getElementById('profile-toggle').addEventListener('click', switchProfile);
+
 updateStatus();
-setInterval(updateStatus, 15000); // Check status elke 15s
+setInterval(updateStatus, 15000);
 updateClock();
-setInterval(updateClock, 1000); // Check klok elke 1s
-
-// Start Gallery Slideshow (Elke 10 seconden)
-if (galleryTarget && galleryImages.length > 1) {
-    setInterval(cycleGallery, 10000); 
-}
-
-// Start Thoughts Cycle (Elke 20 seconden)
-if (quoteTarget && thoughtList.length > 1) {
-    setInterval(cycleThoughts, 20000); 
-}
+setInterval(updateClock, 1000);
+setInterval(cycleGallery, 10000);
+setInterval(cycleThoughts, 20000);
