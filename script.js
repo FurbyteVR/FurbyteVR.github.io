@@ -81,8 +81,6 @@ const galleryImages = [
     "./assets/images/byte-mad.jpg",
     "./assets/images/byte-sad.jpg",
     "./assets/images/byte-tongue.jpg",
-    "./assets/images/byte-model.jpg",
-    "./assets/images/byte-full.jpg",
     "./assets/images/byte-room.jpg"
 ];
 let currentGalleryIndex = 0;
