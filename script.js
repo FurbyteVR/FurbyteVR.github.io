@@ -63,10 +63,12 @@ function updateClock() {
 // --- 2. NIEUW: GALLERY SLIDESHOW ---
 // Pas deze lijst aan met je eigen foto's!
 const galleryImages = [
-    "./assets/images/byte-dark.jpg", // Foto 1 (huidige)
-    "./assets/images/foto2.jpg",     // Vul hier het pad naar je 2e foto in
-    "./assets/images/foto3.jpg",     // Vul hier het pad naar je 3e foto in
-    "./assets/images/foto4.jpg"      // Je kunt er zoveel toevoegen als je wilt
+    "./assets/images/byte-dark.jpg",
+    "./assets/images/20260319_131059_0000.png",
+    "./assets/images/20260319-125301_0000.png",
+    "./assets/images/byte-camera.jpg",
+    "./assets/images/byte-flex-jpg",
+    "./assets/images/byte-room.jpg" 
 ];
 let currentGalleryIndex = 0;
 const galleryTarget = document.getElementById('gallery-target');
