@@ -13,37 +13,28 @@ async function updateStatus() {
 
         if (!dot || !text || !label) return;
 
-        // 1. Check of Lanyard de user kent
-        if (!json.success && json.error && json.error.code === "user_not_monitored") {
-            text.textContent = "Please join the Lanyard Discord.";
-            label.textContent = "LANYARD ERROR";
-            dot.style.backgroundColor = "#ff4747";
-            return;
-        }
-
         if (json.success) {
             const data = json.data;
             const status = data.discord_status;
             
-            // Kleuren instellen
-            const colors = {
-                online: '#43b581',
-                idle: '#faa61a',
-                dnd: '#f04747',
-                offline: '#747f8d'
-            };
-
+            // 1. Kleuren instellen
+            const colors = { online: '#43b581', idle: '#faa61a', dnd: '#f04747', offline: '#747f8d' };
             const currentColor = colors[status] || colors.offline;
             dot.style.backgroundColor = currentColor;
             dot.style.boxShadow = `0 0 10px ${currentColor}`;
             label.textContent = status.toUpperCase();
 
-            // 2. Spotify Prioriteit
+            // 2. Spotify Check
             if (data.listening_to_spotify && data.spotify) {
-                text.textContent = `Listening to ${data.spotify.track} by ${data.spotify.artist}`;
+                // Debugging: dit print de Spotify data in je F12 console
+                console.log("Spotify Data:", data.spotify);
+
+                const song = data.spotify.track || "Unknown Song";
+                const artist = data.spotify.artist || "Unknown Artist";
                 
-                // Extra: Albumhoes als glass-background
-                if (statusBox) {
+                text.textContent = `Listening to ${song} by ${artist}`;
+
+                if (statusBox && data.spotify.album_art_url) {
                     statusBox.style.backgroundImage = `linear-gradient(rgba(45, 40, 50, 0.85), rgba(45, 40, 50, 0.85)), url('${data.spotify.album_art_url}')`;
                     statusBox.style.backgroundSize = 'cover';
                     statusBox.style.backgroundPosition = 'center';
@@ -62,11 +53,8 @@ async function updateStatus() {
         }
     } catch (e) {
         console.error("Lanyard error:", e);
-        const text = document.getElementById('discord-status-text');
-        if (text) text.textContent = "Status is taking a nap...";
     }
 }
 
-// Meteen één keer draaien en dan elke 15 seconden
 updateStatus();
 setInterval(updateStatus, 15000);
