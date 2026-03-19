@@ -3,175 +3,196 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BYTE ⊹ Quiet & Cozy Bubble</title>
-  
+  <title>BYTE ⊹ Void Terminal</title>
   <link rel="icon" type="image/png" href="profielfoto.png">
-
+  
   <style>
     /* -----------------------------------------------------------
-       1. BASIS STIJL & ACHTERGROND (uit foto 1 gehaald)
+       1. BASIS STIJL (Minimal Void)
        ----------------------------------------------------------- */
     body {
-      /* Achtergrondafbeelding van de zonsondergang */
-      background-image: url('achtergrond.png');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      
-      /* Donkere overlay voor betere leesbaarheid tekst */
-      background-color: #121212; /* Zeer donkergrijs base */
-      color: #E0E0E0; /* Zacht wit voor de tekst */
-      
-      font-family: Arial, sans-serif;
+      background-color: #000000; /* Deep Void Black */
+      color: #FFFFFF;
+      font-family: 'Courier New', Courier, monospace; /* Monospace voor tech vibe */
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       margin: 0;
-      padding: 20px;
+      padding: 0;
+      overflow: hidden; /* Verbergt scrollbar voor strakke look */
     }
 
     /* -----------------------------------------------------------
-       2. DE "BUBBLE" CONTAINER (het middenblok)
+       2. DE HOOFDPANEEL (Geometric Void)
        ----------------------------------------------------------- */
-    .bubble-container {
-      /* Het "Little Bubble" idee: glassmorphism effect */
-      background: rgba(0, 0, 0, 0.75); /* Donkere basis, half-doorzichtig */
-      backdrop-filter: blur(10px); /* Vervaagt de achtergrond achter het blok */
-      -webkit-backdrop-filter: blur(10px);
-      
+    .void-panel {
+      background: #0A0A0A; /* Iets lichter zwart paneel */
       width: 100%;
       max-width: 480px;
-      padding: 50px 30px;
-      border-radius: 40px; /* Mooie grote ronde hoeken */
-      border: 1px solid rgba(255, 255, 255, 0.1); /* Zachte glow rand */
-      box-shadow: 0 10px 40px rgba(156, 39, 176, 0.3); /* Subtiele paarse schaduw glow */
+      height: auto;
+      padding: 60px 40px;
+      border-radius: 5px; /* Heel subtiel afgerond, bijna strak */
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      position: relative;
       text-align: center;
+      box-shadow: 0 0 50px rgba(138, 43, 226, 0.3); /* Subtiele electric paarse glow */
+    }
+
+    /* Geometrische hoek detail */
+    .void-panel::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      right: -15px;
+      width: 30px;
+      height: 30px;
+      background: #CC00FF; /* Electric Magenta */
+      clip-path: polygon(100% 0, 100% 100%, 0 100%);
     }
 
     /* -----------------------------------------------------------
-       3. PROFIEL SECTIE (uit foto 2 gehaald)
+       3. PROFIEL SECTIE (Geometric Mask)
        ----------------------------------------------------------- */
-    .profile-pic {
-      width: 130px;
-      height: 130px;
-      border-radius: 50%; /* Maakt het een cirkel */
+    .profile-frame {
+      width: 160px;
+      height: 160px;
+      margin: 0 auto 30px;
+      position: relative;
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); /* Hexagon mask */
+      background-image: url('achtergrond.png');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .profile-frame img {
+      width: 100%;
+      height: 100%;
       object-fit: cover;
-      
-      /* Pastelroze border en glow (uit de lucht getrokken) */
-      border: 4px solid #D194C1; 
-      box-shadow: 0 0 20px rgba(209, 148, 193, 0.6); 
-      margin-bottom: 25px;
+      opacity: 0.9; /* Iets minder dominant */
+    }
+
+    /* Scherpe frame overlay */
+    .profile-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      border: 4px solid #CC00FF; /* Electric Magenta edge */
+      box-sizing: border-box;
+      pointer-events: none; /* Kan er doorheen klikken */
     }
 
     h1 {
-      font-size: 2.6em;
+      font-size: 3em;
       margin: 0;
       color: #FFFFFF;
-      letter-spacing: 2px;
-      /* Subtiele paarse glow voor de naam */
-      text-shadow: 0 0 10px rgba(156, 39, 176, 0.8); 
+      letter-spacing: 4px;
+      text-shadow: 0 0 15px rgba(204, 0, 255, 0.7); /* Electric Magenta glow */
     }
 
-    .info-line {
-      margin-top: 5px;
-      color: rgba(224, 224, 224, 0.8);
+    .info-subtitle {
+      color: rgba(255, 255, 255, 0.6);
       font-size: 0.9em;
+      margin: 5px 0 35px;
+    }
+
+    /* -----------------------------------------------------------
+       4. TAGS & QUOTE (Strakke Labels)
+       ----------------------------------------------------------- */
+    .tags {
+      margin-bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tag-strak {
+      color: #CC00FF; /* Electric Magenta */
+      background: transparent;
+      padding: 5px 15px;
+      border: 1px solid rgba(204, 0, 255, 0.3);
+      font-size: 0.85em;
+      font-weight: bold;
+    }
+
+    .quote-strak {
+      font-style: italic;
+      margin: 35px 0 50px;
+      font-size: 1.4em;
+      color: #FFFFFF;
+      opacity: 0.9;
       letter-spacing: 1px;
     }
 
     /* -----------------------------------------------------------
-       4. VIBE TAGS & QUOTE (jouw tekst)
+       5. LINKS SECTION (Geometric Buttons)
        ----------------------------------------------------------- */
-    .vibe-tags {
-      margin: 25px 0;
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .tag {
-      /* Subtiel donkerpaars background */
-      background: rgba(156, 39, 176, 0.2); 
-      color: #D194C1; /* Pastelroze tekst */
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 0.85em;
-      border: 1px solid rgba(156, 39, 176, 0.5);
-    }
-
-    .main-quote {
-      font-style: italic;
-      margin: 35px 0;
-      font-size: 1.25em;
-      color: #FFFFFF;
-      opacity: 0.95;
-      text-shadow: 0 0 5px rgba(209, 148, 193, 0.5);
-    }
-
-    /* -----------------------------------------------------------
-       5. LINKS / KNOPPEN SECTIE
-       ----------------------------------------------------------- */
-    .links-section {
-      margin-top: 45px;
-    }
-
-    .socials-intro {
-      color: rgba(224, 224, 224, 0.6);
-      font-size: 0.9em;
-      margin-bottom: 20px;
-    }
-
-    .link-btn {
+    .link-strak-btn {
       display: block;
-      /* Knop stijl: donker base met zachte glow */
-      background: linear-gradient(135deg, rgba(30, 30, 30, 0.8) 0%, rgba(10, 10, 10, 0.9) 100%);
+      background-color: black;
       color: #FFFFFF;
       text-decoration: none;
-      padding: 18px;
+      padding: 20px;
       margin-bottom: 15px;
-      border-radius: 15px;
-      border: 1px solid rgba(209, 148, 193, 0.3); /* Pastelroze randje */
+      border-radius: 2px; /* Heel strak */
+      border: 1px solid rgba(204, 0, 255, 0.2);
       font-weight: bold;
       font-size: 1.1em;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease-in-out;
+      text-align: left; /* Links uitlijnen */
+      position: relative;
     }
 
-    /* Hover effect: oplichten in paars/roze */
-    .link-btn:hover {
-      transform: translateY(-3px); /* Beweegt een beetje omhoog */
-      border-color: #D194C1; /* Randje wordt feller */
-      box-shadow: 0 5px 20px rgba(156, 39, 176, 0.5); /* Paarse glow eromheen */
-      background: linear-gradient(135deg, rgba(156, 39, 176, 0.3) 0%, rgba(10, 10, 10, 0.9) 100%);
+    /* Geometric corner detail op knop */
+    .link-strak-btn::after {
+      content: '►';
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(204, 0, 255, 0.4);
+    }
+
+    /* Hover effect: oplichten en border veranderen */
+    .link-strak-btn:hover {
+      border-color: #CC00FF;
+      background: linear-gradient(135deg, rgba(204, 0, 255, 0.2) 0%, rgba(10, 10, 10, 1) 100%);
+      transform: scale(1.02); /* Iets oplichten */
+    }
+
+    .link-strak-btn:hover::after {
+      color: #CC00FF; /* Arrow wordt feller */
     }
 
   </style>
 </head>
 <body>
 
-  <div class="bubble-container">
+  <div class="void-panel">
     
-    <img src="profielfoto.png" alt="Byte Avatar" class="profile-pic">
+    <div class="profile-frame">
+      <img src="profielfoto.png" alt="Byte Avatar">
+      <div class="profile-overlay"></div> </div>
+    
     <h1>BYTE</h1>
-    <p class="info-line">He/Him ⊹ GMT+1</p>
+    <p class="info-subtitle">He/Him ⊹ GMT+1</p>
     
-    <div class="vibe-tags">
-      <span class="tag">quiet & cozy</span>
-      <span class="tag">expert at doing nothing</span>
+    <div class="tags">
+      <span class="tag-strak">[ quiet & cozy ]</span>
+      <span class="tag-strak">[ expert at doing nothing ]</span>
+      <span class="tag-strak">[ just a bit shy ]</span>
     </div>
     
-    <p class="main-quote">“staying in my own little bubble”</p>
+    <p class="quote-strak">“staying in my own little bubble”</p>
     
-    <div class="links-section">
-      <p class="socials-intro">Socials: just a bit shy (maar hier zijn wat links):</p>
-      
-      <a href="#" target="_blank" class="link-btn">Discord Server</a>
-      <a href="#" target="_blank" class="link-btn">Twitter / X</a>
-      <a href="#" target="_blank" class="link-btn">YouTube</a>
-      <a href="#" target="_blank" class="link-btn">Instagram (Art?)</a>
-      
-    </div>
+    <a href="#" target="_blank" class="link-strak-btn">DISCORD SERVER</a>
+    <a href="#" target="_blank" class="link-strak-btn">TWITTER / X</a>
+    <a href="#" target="_blank" class="link-strak-btn">YOUTUBE</a>
+    <a href="#" target="_blank" class="link-strak-btn">INSTAGRAM (ART?)</a>
+    
   </div>
 
 </body>
