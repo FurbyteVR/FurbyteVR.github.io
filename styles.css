@@ -147,3 +147,25 @@ h2 { font-size: 1.1rem; color: var(--accent-glow); margin-bottom: 12px; text-tra
 .bubble:nth-child(2) { width: 300px; height: 300px; left: 60%; animation-delay: 5s; }
 .bubble:nth-child(3) { width: 150px; height: 150px; left: 80%; animation-delay: 12s; }
 .bubble:nth-child(4) { width: 250px; height: 250px; left: 20%; animation-delay: 18s; }
+
+/* Schakel selecteren en slepen uit voor de hele site */
+html, body {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none;     /* IE 10 en Edge */
+    user-select: none;         /* Standaard (Chrome, Firefox, etc.) */
+}
+
+/* Zorg dat afbeeldingen niet gesleept kunnen worden */
+img {
+    -webkit-user-drag: none;
+    user-drag: none;
+    pointer-events: none; /* Dit voorkomt ook dat mensen rechtsklikken om op te slaan */
+}
+
+/* OPTIONEEL: Wil je dat bepaalde tekst (zoals je Discord naam of links) WEL kopieerbaar blijft? */
+/* Voeg dan de class 'selectable' toe aan die elementen in HTML en gebruik dit: */
+.selectable {
+    -webkit-user-select: text;
+    user-select: text;
+    pointer-events: auto;
+}
