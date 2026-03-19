@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Byte's profile</title>
+    <title>Profile Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -15,18 +15,22 @@
         <div class="bubble"></div>
     </div>
 
+    <button id="profile-toggle" class="glass toggle-btn">
+        <span class="icon">✨</span> Switch Profile
+    </button>
+
     <main class="bento-grid">
         <article class="bento-box profile-box glass">
-            <img src="./assets/images/byte-sunset.jpg" alt="Byte" class="profile-img">
+            <img src="./assets/images/byte-sunset.jpg" alt="Profile" class="profile-img" id="profile-main-img">
             <div class="profile-text">
-                <h1>BYTE</h1>
-                <p class="pronouns">HE/HIM</p>
+                <h1 id="profile-name">BYTE</h1>
+                <p class="pronouns" id="profile-pronouns">HE/HIM</p>
             </div>
         </article>
 
         <article class="bento-box bio-box glass">
             <h2>🫧 Vibe</h2>
-            <p>Quiet & cozy. Staying in my own little bubble.</p>
+            <p id="profile-vibe">Quiet & cozy. Staying in my own little bubble.</p>
         </article>
 
         <article class="bento-box status-box glass">
@@ -48,7 +52,8 @@
                 <a href="#" class="social-btn"><span class="icon">💬</span> Discord</a>
                 <a href="#" class="social-btn"><span class="icon">💻</span> GitHub</a>
                 <a href="#" class="social-btn"><span class="icon">🐦</span> Twitter</a>
-                <a href="#" class="social-btn"><span class="icon">📱</span> Tiktok</a> <a href="#" class="social-btn"><span class="icon">📺</span> YouTube</a>
+                <a href="#" class="social-btn"><span class="icon">📱</span> Tiktok</a> 
+                <a href="#" class="social-btn"><span class="icon">📺</span> YouTube</a>
                 <a href="#" class="social-btn"><span class="icon">🎮</span> Steam</a>
             </div>
         </article>
@@ -56,7 +61,7 @@
         <article class="bento-box quotes-box glass">
             <h2>💭 Thoughts</h2>
             <p class="quote-text" id="quote-target">"Staying in my own little bubble, where the stars shine a bit brighter."</p>
-            <p class="subtext">— Byte</p>
+            <p class="subtext" id="quote-author">— Byte</p>
         </article>
 
         <article class="bento-box extra-box glass">
