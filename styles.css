@@ -7,8 +7,13 @@
     --text-muted: #A59EAD;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
 
+/* --- BODY & SCROLL FIX --- */
 body {
     background-color: var(--bg-color);
     background-image: radial-gradient(circle at 50% 0%, #3a2e42 0%, var(--bg-color) 80%);
@@ -19,10 +24,25 @@ body {
     justify-content: center;
     align-items: center;
     padding: 20px;
-    overflow-x: hidden;
+    position: relative;
 }
 
-/* --- BENTO GRID LOGIC --- */
+/* Schakel scrollen uit op grote schermen, maar behoud het op mobiel */
+@media (min-width: 768px) {
+    body {
+        overflow: hidden;
+        height: 100vh;
+    }
+}
+
+@media (max-width: 767px) {
+    body {
+        overflow-y: auto;
+        align-items: flex-start; /* Zorgt dat de grid bovenaan begint op mobiel */
+    }
+}
+
+/* --- BENTO GRID --- */
 .bento-grid {
     display: grid;
     gap: 1.5rem;
@@ -44,11 +64,8 @@ body {
     .profile-box { grid-area: profile; }
     .bio-box { grid-area: bio; }
     .status-box { grid-area: status; }
-    
-    /* Deze twee rekken we uit naar beneden */
     .gallery-box { grid-area: gallery; grid-row: span 2; }
     .socials-box { grid-area: socials; grid-row: span 2; }
-    
     .quotes-box { grid-area: quotes; }
     .extra-box { grid-area: extra; }
 }
@@ -75,46 +92,135 @@ body {
 
 /* --- IMAGES --- */
 .profile-img { 
-    height: 280px; width: 100%; border-radius: 20px; 
-    object-fit: cover; object-position: center 20%; margin-bottom: 1.5rem;
+    height: 280px; 
+    width: 100%; 
+    border-radius: 20px; 
+    object-fit: cover; 
+    object-position: center 20%; 
+    margin-bottom: 1.5rem;
 }
-.gallery-img { height: 100%; width: 100%; object-fit: cover; border-radius: 20px; min-height: 250px; }
 
-/* --- TEXT --- */
+.gallery-img { 
+    height: 100%; 
+    width: 100%; 
+    object-fit: cover; 
+    border-radius: 20px; 
+    min-height: 250px; 
+}
+
+/* --- TYPOGRAPHY --- */
 h1 { font-size: 3rem; font-weight: 900; }
 h2 { font-size: 1.1rem; color: var(--accent-glow); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
 .subtext { color: var(--text-muted); font-size: 0.8rem; }
 
 /* --- STATUS & CLOCK --- */
-#discord-status-text { transition: opacity 0.4s ease; margin-bottom: 5px; }
-.fade-out { opacity: 0; }
-.status-row { display: flex; align-items: center; gap: 10px; margin-top: auto; }
-.status-indicator { width: 12px; height: 12px; border-radius: 50%; animation: pulse-glow 2s infinite; }
+#discord-status-text { 
+    transition: opacity 0.4s ease; 
+    margin-bottom: 5px; 
+    font-size: 0.95rem;
+}
 
-.main-time { font-size: 2rem; font-weight: 900; line-height: 1.1; margin: 10px 0; }
+.fade-out { opacity: 0; }
+
+.status-row { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    margin-top: auto; 
+}
+
+.status-indicator { 
+    width: 12px; 
+    height: 12px; 
+    border-radius: 50%; 
+    animation: pulse-glow 2s infinite ease-in-out; 
+}
+
+.main-time { 
+    font-size: 2rem; 
+    font-weight: 900; 
+    line-height: 1.1; 
+    margin: 10px 0; 
+}
+
 .main-time span { animation: blink 2s infinite; }
-.sub-time { font-size: 0.9rem; color: var(--accent-glow); font-weight: 700; text-transform: uppercase; }
+
+.sub-time { 
+    font-size: 0.9rem; 
+    color: var(--accent-glow); 
+    font-weight: 700; 
+    text-transform: uppercase; 
+}
 
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 @keyframes pulse-glow { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.7; } }
 
 /* --- SOCIALS --- */
-.link-buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
-.social-btn {
-    display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05);
-    color: var(--text-primary); text-decoration: none; padding: 12px; border-radius: 15px;
-    font-weight: 700; font-size: 0.85rem; border: 1px solid var(--glass-border); transition: 0.3s;
+.link-buttons { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 10px; 
+    margin-top: 15px; 
 }
-.social-btn:hover { background: rgba(199, 116, 232, 0.15); transform: translateX(5px); }
 
-/* --- BUBBLES --- */
+.social-btn {
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary); 
+    text-decoration: none; 
+    padding: 12px; 
+    border-radius: 15px;
+    font-weight: 700; 
+    font-size: 0.85rem; 
+    border: 1px solid var(--glass-border); 
+    transition: 0.3s;
+}
+
+.social-btn:hover { 
+    background: rgba(199, 116, 232, 0.15); 
+    border-color: var(--accent-glow);
+    transform: translateX(5px); 
+}
+
+/* --- THOUGHTS --- */
+.quote-text {
+    font-style: italic;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+/* --- BUBBLE FIX --- */
+.bubble-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+
 .bubble {
-    position: absolute; bottom: -150px; border-radius: 50%; pointer-events: none;
+    position: absolute;
+    bottom: -150px;
     background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.08), transparent);
+    border: 1px solid rgba(255,255,255,0.03);
+    border-radius: 50%;
     animation: floatUp 30s infinite linear;
 }
-@keyframes floatUp { 0% { transform: translateY(0); opacity: 0; } 100% { transform: translateY(-120vh); opacity: 0; } }
-.bubble:nth-child(1) { width: 200px; left: 5%; }
-.bubble:nth-child(2) { width: 300px; left: 60%; animation-delay: 5s; }
-.bubble:nth-child(3) { width: 150px; left: 80%; animation-delay: 12s; }
-.bubble:nth-child(4) { width: 250px; left: 20%; animation-delay: 18s; }
+
+@keyframes floatUp {
+    0% { transform: translateY(0); opacity: 0; }
+    10% { opacity: 0.5; }
+    90% { opacity: 0.5; }
+    100% { transform: translateY(-120vh); opacity: 0; }
+}
+
+.bubble:nth-child(1) { width: 200px; height: 200px; left: 5%; }
+.bubble:nth-child(2) { width: 300px; height: 300px; left: 60%; animation-delay: 5s; }
+.bubble:nth-child(3) { width: 150px; height: 150px; left: 80%; animation-delay: 12s; }
+.bubble:nth-child(4) { width: 250px; height: 250px; left: 20%; animation-delay: 18s; }
