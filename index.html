@@ -1,1 +1,169 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⊹ Choose Your Vibe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Raleway:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            background: #0e0c14;
+            font-family: 'Nunito', sans-serif;
+            overflow: hidden;
+        }
+        .ambient { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+        .ambient-byte {
+            position: absolute; width: 600px; height: 600px;
+            left: -80px; top: 50%; transform: translateY(-50%);
+            background: radial-gradient(circle, rgba(199,116,232,0.13) 0%, transparent 65%);
+            animation: ambPulse 7s ease-in-out infinite alternate;
+        }
+        .ambient-sq {
+            position: absolute; width: 600px; height: 600px;
+            right: -80px; top: 50%; transform: translateY(-50%);
+            background: radial-gradient(circle, rgba(120,200,255,0.11) 0%, transparent 65%);
+            animation: ambPulse 7s ease-in-out 3.5s infinite alternate;
+        }
+        @keyframes ambPulse {
+            from { opacity: 0.6; transform: translateY(-50%) scale(1); }
+            to   { opacity: 1;   transform: translateY(-50%) scale(1.15); }
+        }
+        .divider-line {
+            position: fixed; left: 50%; top: 50%;
+            transform: translate(-50%, -50%);
+            width: 1px; height: 55vh;
+            background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.07) 30%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.07) 70%, transparent);
+            z-index: 1;
+        }
+        .page-label {
+            position: relative; z-index: 10;
+            color: rgba(255,255,255,0.2); font-size: 0.65rem;
+            letter-spacing: 4px; text-transform: uppercase;
+            margin-bottom: 2.5rem; font-family: 'Raleway', sans-serif;
+            animation: fadeUp 0.6s ease both;
+        }
+        .cards-wrapper {
+            display: flex; align-items: stretch;
+            position: relative; z-index: 10;
+            width: min(840px, 94vw); gap: 48px;
+            animation: fadeUp 0.7s ease 0.1s both;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .profile-card {
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; padding: 2.5rem 1.8rem 2rem;
+            text-decoration: none; border-radius: 32px;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+            position: relative; overflow: hidden; gap: 12px;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        }
+        .byte-card { background: rgba(55,42,66,0.5); border: 1px solid rgba(199,116,232,0.2); }
+        .byte-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 24px 60px rgba(199,116,232,0.22), 0 0 0 1px rgba(199,116,232,0.45); }
+        .squeakers-card { background: rgba(18,38,65,0.55); border: 1px solid rgba(120,200,255,0.18); }
+        .squeakers-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 24px 60px rgba(120,200,255,0.18), 0 0 0 1px rgba(120,200,255,0.4); }
+        .avatar-ring { width: 96px; height: 96px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 4px; }
+        .byte-ring { background: rgba(199,116,232,0.12); border: 2px solid rgba(199,116,232,0.35); box-shadow: 0 0 28px rgba(199,116,232,0.18); }
+        .sq-ring   { background: rgba(120,200,255,0.1);  border: 2px solid rgba(120,200,255,0.28); box-shadow: 0 0 28px rgba(120,200,255,0.14); }
+        .avatar-letter { font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 2.3rem; }
+        .byte-card .avatar-letter { color: #C774E8; }
+        .squeakers-card .avatar-letter { color: #78C8FF; }
+        .card-name { font-family: 'Raleway', sans-serif; font-size: 1.9rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; }
+        .byte-card .card-name { color: #F2E8D2; }
+        .squeakers-card .card-name { color: #E8F4FF; }
+        .card-pronouns { font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+        .byte-card .card-pronouns { color: #C774E8; }
+        .squeakers-card .card-pronouns { color: #78C8FF; }
+        .card-bio { font-size: 0.85rem; text-align: center; line-height: 1.7; max-width: 190px; }
+        .byte-card .card-bio { color: #A59EAD; }
+        .squeakers-card .card-bio { color: #7AAFC8; }
+        .card-tags { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 2px; }
+        .tag { padding: 4px 12px; border-radius: 50px; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.5px; }
+        .byte-card .tag      { background: rgba(199,116,232,0.1);  color: #C774E8; border: 1px solid rgba(199,116,232,0.22); }
+        .squeakers-card .tag { background: rgba(120,200,255,0.08); color: #78C8FF; border: 1px solid rgba(120,200,255,0.18); }
+        .enter-btn {
+            margin-top: auto; padding: 11px 28px; border-radius: 50px;
+            font-size: 0.72rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
+            border: none; cursor: pointer; transition: background 0.2s ease;
+            font-family: 'Raleway', sans-serif; pointer-events: none;
+        }
+        .byte-card .enter-btn        { background: rgba(199,116,232,0.15); color: #C774E8; border: 1px solid rgba(199,116,232,0.4); }
+        .byte-card:hover .enter-btn  { background: rgba(199,116,232,0.28); }
+        .squeakers-card .enter-btn       { background: rgba(120,200,255,0.1);  color: #78C8FF; border: 1px solid rgba(120,200,255,0.32); }
+        .squeakers-card:hover .enter-btn { background: rgba(120,200,255,0.22); }
+        .or-badge {
+            position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 20;
+            background: #0e0c14; border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.28); font-size: 0.65rem; font-weight: 700;
+            letter-spacing: 2px; text-transform: uppercase; padding: 8px 12px; border-radius: 50px;
+            font-family: 'Raleway', sans-serif;
+        }
+        .particles { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
+        .particle { position: absolute; border-radius: 50%; animation: floatUp linear infinite; }
+        @keyframes floatUp {
+            0% { transform: translateY(110vh); opacity: 0; }
+            5% { opacity: 1; } 95% { opacity: 1; }
+            100% { transform: translateY(-10vh); opacity: 0; }
+        }
+        .flake { position: absolute; color: rgba(170,220,255,0.22); animation: snowFall linear infinite; }
+        @keyframes snowFall {
+            0% { transform: translateY(-20px); opacity: 0; }
+            10% { opacity: 1; } 90% { opacity: 0.5; }
+            100% { transform: translateY(105vh); opacity: 0; }
+        }
+        @media (max-width: 600px) {
+            body { overflow-y: auto; justify-content: flex-start; padding: 3rem 1rem; }
+            .cards-wrapper { flex-direction: column; gap: 20px; }
+            .or-badge { display: none; } .divider-line { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient"><div class="ambient-byte"></div><div class="ambient-sq"></div></div>
+    <div class="divider-line"></div>
+    <div class="particles" id="particles"></div>
+    <p class="page-label">⊹ choose your vibe ⊹</p>
+    <div class="cards-wrapper">
+        <a class="profile-card byte-card" href="./byte.html">
+            <div class="avatar-ring byte-ring"><span class="avatar-letter">B</span></div>
+            <div class="card-name">Byte</div>
+            <div class="card-pronouns">He / Him &nbsp;⊹&nbsp; GMT+1</div>
+            <div class="card-bio">Quiet & cozy.<br>Staying in my own little bubble.</div>
+            <div class="card-tags"><span class="tag">Netherlands</span><span class="tag">Furry</span></div>
+            <button class="enter-btn">Enter ↗</button>
+        </a>
+        <div class="or-badge">or</div>
+        <a class="profile-card squeakers-card" href="./squeakers.html">
+            <div class="avatar-ring sq-ring"><span class="avatar-letter">S</span></div>
+            <div class="card-name">Squeakers</div>
+            <div class="card-pronouns">He / Him &nbsp;❄&nbsp; Texas</div>
+            <div class="card-bio">Shy but friendly.<br>Single pringle. Ask me anything.</div>
+            <div class="card-tags"><span class="tag">Texas</span><span class="tag">26</span></div>
+            <button class="enter-btn">Enter ↗</button>
+        </a>
+    </div>
+    <script>
+        const el = document.getElementById('particles');
+        for (let i = 0; i < 9; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const s = Math.random() * 55 + 15;
+            p.style.cssText = `width:${s}px;height:${s}px;left:${Math.random()*46}%;background:rgba(199,116,232,${(Math.random()*0.05+0.02).toFixed(2)});border:1px solid rgba(199,116,232,0.07);animation-duration:${(Math.random()*18+14).toFixed(1)}s;animation-delay:${(Math.random()*16).toFixed(1)}s;`;
+            el.appendChild(p);
+        }
+        for (let i = 0; i < 16; i++) {
+            const f = document.createElement('div');
+            f.className = 'flake';
+            f.textContent = '❄';
+            f.style.cssText = `left:${52+Math.random()*46}%;font-size:${(Math.random()*7+7).toFixed(0)}px;animation-duration:${(Math.random()*10+9).toFixed(1)}s;animation-delay:${(Math.random()*14).toFixed(1)}s;`;
+            el.appendChild(f);
+        }
+    </script>
+</body>
+</html>
