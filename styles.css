@@ -3,7 +3,7 @@
     --glass-bg: rgba(60, 50, 55, 0.45);
     --glass-border: rgba(255, 255, 255, 0.08);
     --accent-glow: #C774E8;
-    --text-primary: #F2E8D2; /* Cozy Cream */
+    --text-primary: #F2E8D2;
     --text-muted: #A59EAD;
 }
 
@@ -35,26 +35,17 @@ body {
 @media (min-width: 768px) {
     .bento-grid {
         grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: auto auto auto; /* Drie rijen */
         grid-template-areas: 
             "profile profile bio"
             "profile profile status"
-            "gallery socials quotes"; /* Alles op één lijn onderin */
+            "gallery socials quotes"; /* Drie gelijke kolommen onderin */
     }
-}
-
-/* Zorg dat de boxen hun plek opeisen */
-.profile-box { grid-area: profile; }
-.bio-box { grid-area: bio; }
-.status-box { grid-area: status; }
-.gallery-box { grid-area: gallery; }
-.socials-box { grid-area: socials; }
-.quotes-box { grid-area: quotes; }
-
-/* Kleine tweak voor de socials: knoppen onder elkaar */
-.socials-box .link-buttons {
-    flex-direction: column;
-    grid-template-columns: 1fr;
+    .profile-box { grid-area: profile; }
+    .bio-box { grid-area: bio; }
+    .status-box { grid-area: status; }
+    .gallery-box { grid-area: gallery; }
+    .socials-box { grid-area: socials; }
+    .quotes-box { grid-area: quotes; }
 }
 
 /* --- GLASSMORPHISM --- */
@@ -67,7 +58,8 @@ body {
     border: 1px solid var(--glass-border);
     box-shadow: 0 10px 40px rgba(0,0,0,0.4);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .glass:hover {
@@ -82,7 +74,7 @@ body {
     width: 100%;
     border-radius: 20px; 
     object-fit: cover;
-    object-position: center 00%; 
+    object-position: center 20%; 
     margin-bottom: 1.5rem;
 }
 
@@ -90,29 +82,29 @@ body {
     height: 100%; 
     width: 100%; 
     object-fit: cover; 
-    border-radius: 20px; 
-    min-height: 200px;
+    border-radius: 20px;
+    min-height: 200px; /* Belangrijk voor de uitlijning */
 }
 
 /* --- TYPOGRAPHY --- */
-h1 { font-size: 3rem; font-weight: 900; color: var(--text-primary); }
+h1 { font-size: 3rem; font-weight: 900; }
 h2 { font-size: 1.1rem; color: var(--accent-glow); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
-.subtext { color: var(--text-muted); font-size: 0.85rem; }
+.subtext { color: var(--text-muted); font-size: 0.8rem; margin-top: 5px; }
 
-/* --- STATUS & ANIMATIONS --- */
+/* --- STATUS & FADE --- */
 #discord-status-text {
     transition: opacity 0.4s ease;
     margin-bottom: 5px;
+    font-size: 0.95rem;
 }
 
 .fade-out { opacity: 0; }
 
-.status-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.status-row { display: flex; align-items: center; gap: 10px; margin-top: auto; }
 
 .status-indicator {
     width: 12px; height: 12px;
     border-radius: 50%;
-    transition: all 0.4s ease;
     animation: pulse-glow 2s infinite ease-in-out;
 }
 
@@ -122,56 +114,44 @@ h2 { font-size: 1.1rem; color: var(--accent-glow); margin-bottom: 12px; text-tra
     100% { transform: scale(1); opacity: 1; }
 }
 
-/* --- SOCIAL BUTTONS --- */
+/* --- SOCIAL BUTTONS (COLUMNS) --- */
 .link-buttons { 
     display: flex;
-    flex-direction: column; /* Onder elkaar voor de smalle box */
-    gap: 10px; 
-    margin-top: 10px; 
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
 }
 
 .social-btn {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     background: rgba(255, 255, 255, 0.05);
     color: var(--text-primary);
     text-decoration: none;
-    padding: 12px 15px;
-    border-radius: 18px;
-    font-size: 0.9rem;
+    padding: 12px;
+    border-radius: 15px;
+    font-size: 0.85rem;
     font-weight: 700;
     border: 1px solid var(--glass-border);
-    transition: all 0.3s ease;
+    transition: 0.3s;
 }
 
 .social-btn:hover {
-    background: rgba(199, 116, 232, 0.15);
+    background: rgba(199, 116, 232, 0.2);
     border-color: var(--accent-glow);
     transform: translateX(5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
-.social-btn .icon { font-size: 1.2rem; }
-
-/* --- QUOTES BOX --- */
-.quotes-box {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
+/* --- THOUGHTS / QUOTES --- */
 .quote-text {
     font-style: italic;
-    font-size: 0.95rem;
-    line-height: 1.5;
-    color: var(--text-primary);
-    margin-bottom: 8px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-bottom: 10px;
 }
 
 /* --- BUBBLES --- */
-.bubble-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-
 .bubble {
     position: absolute;
     bottom: -150px;
@@ -179,16 +159,17 @@ h2 { font-size: 1.1rem; color: var(--accent-glow); margin-bottom: 12px; text-tra
     border: 1px solid rgba(255,255,255,0.03);
     border-radius: 50%;
     animation: floatUp 30s infinite linear;
+    pointer-events: none;
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(0); opacity: 0; }
+    10% { opacity: 0.5; }
+    90% { opacity: 0.5; }
+    100% { transform: translateY(-120vh); opacity: 0; }
 }
 
 .bubble:nth-child(1) { width: 200px; height: 200px; left: 5%; animation-delay: 0s; }
 .bubble:nth-child(2) { width: 300px; height: 300px; left: 60%; animation-delay: 5s; }
 .bubble:nth-child(3) { width: 150px; height: 150px; left: 80%; animation-delay: 12s; }
 .bubble:nth-child(4) { width: 250px; height: 250px; left: 20%; animation-delay: 18s; }
-
-@keyframes floatUp {
-    0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-    10% { opacity: 0.5; }
-    90% { opacity: 0.5; }
-    100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
-}
