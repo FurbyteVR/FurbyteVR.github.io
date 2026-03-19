@@ -4,7 +4,7 @@
  */
 
 // The Discord ID must be replaced with the user's actual 18-digit Discord ID
-const DISCORD_USER_ID = "YOUR_18_DIGIT_DISCORD_ID_HERE"; 
+const DISCORD_USER_ID = "416887610233847820"; 
 const LANYARD_API_URL = `https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`;
 
 // DOM Element Selectors
