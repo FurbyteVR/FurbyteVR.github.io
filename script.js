@@ -12,22 +12,10 @@ async function updateStatus() {
 
         if (!dot || !text || !label) return;
 
-        // --- DEZE CHECK IS BELANGRIJK ---
-        // Controleer of Lanyard de user al volgt
-        if (!json.success && json.error && json.error.code === "user_not_monitored") {
-            text.textContent = "Lanyard server check...";
-            label.textContent = "JOIN LANYARD DISCORD"; // Duidelijke instructie
-            dot.style.backgroundColor = "#ff4747"; // Rood licht
-            dot.style.boxShadow = "0 0 10px #ff4747";
-            return;
-        }
-
-        // Als Lanyard data heeft
         if (json.success) {
             const data = json.data;
-            
-            // ... (rest van de code blijft hetzelfde) ...
             const status = data.discord_status;
+            
             const colors = {
                 online: '#43b581',
                 idle: '#faa61a',
@@ -35,22 +23,24 @@ async function updateStatus() {
                 offline: '#747f8d'
             };
 
+            // Zorg dat dit precies zo staat: || zonder spaties ertussen
             const currentColor = colors[status] || colors.offline;
+            
             dot.style.backgroundColor = currentColor;
             dot.style.boxShadow = `0 0 10px ${currentColor}`;
             label.textContent = status.toUpperCase();
 
-            // Update de tekst (Prioriteit: Spotify > Custom Status > Default)
+            // Zoek naar Spotify of Custom Status
             if (data.listening_to_spotify && data.spotify) {
                 text.textContent = `Listening to ${data.spotify.track}`;
             } else {
-                const customStatus = data.activities.find(a => a.type === 4);
-                if (customStatus && customStatus.state) {
-                    text.textContent = customStatus.state;
-                } else {
-                    text.textContent = "Expert at doing nothing.";
-                }
+                const custom = data.activities.find(a => a.type === 4);
+                text.textContent = (custom && custom.state) ? `"${custom.state}"` : "Expert at doing nothing.";
             }
+        } else if (json.error && json.error.code === "user_not_monitored") {
+            text.textContent = "Please join the Lanyard Discord.";
+            label.textContent = "ERROR";
+            dot.style.backgroundColor = "#ff4747";
         }
     } catch (e) {
         console.error("Lanyard error:", e);
