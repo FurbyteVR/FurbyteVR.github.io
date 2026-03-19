@@ -76,7 +76,7 @@ body {
     margin-bottom: 1.5rem; 
     object-fit: cover;
     /* --- DIT IS DE FIX --- */
-    object-position: center 20%; /* Schuift de afbeelding omhoog (gezicht in beeld) */
+    object-position: center 0%; /* Schuift de afbeelding omhoog (gezicht in beeld) */
 }
 
 /* De gallery foto mag vaak wel gewoon in het midden blijven */
