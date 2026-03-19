@@ -1,4 +1,3 @@
-// --- CONFIGURATION ---
 const PROFILES = {
     byte: {
         name: "BYTE",
@@ -18,24 +17,26 @@ const PROFILES = {
         ],
         accent: "#C774E8",
         discordId: "416887610233847820",
-        style: "default" // De normale paarse bento stijl
+        style: "default",
+        localTime: "Amsterdam, NL (GMT+1)"
     },
     squeakers: {
         name: "OmgItzSqueakers",
         pronouns: "HE/HIM",
         vibe: "Shy but friendly. Single Pringle.",
-        mainImg: "./assets/images/friend-main.jpg", // Jouw nieuwe foto (image_2.png)
+        mainImg: "./assets/images/friend-main.jpg",
         images: [
-            "./assets/images/friend-main.jpg", // Voor nu dezelfde, vul aan met meer ijzige foto's!
+            "./assets/images/friend-main.jpg",
             "./assets/images/friend-main.jpg"
         ],
         thoughts: [
-            "\"Ask me anything.\""
+            "\"Ask me anything.\"",
+            "\"Stay cool, stay icy.\""
         ],
-        accent: "#A0FEFE", // Neon Cyaan accent voor Status/Tijd in ice-style
-        discordId: "JOUW_VRIEND_DISCORD_ID", // Belangrijk: Vul de ID van je vriend hier in!
-        style: "ice-style", // De nieuwe winterse stijl
-        localTime: "Austin, TX (GMT-6)" // De locatie van je vriend
+        accent: "#A0FEFE",
+        discordId: "VRIEND_DISCORD_ID_HIER", // VERVANG DIT DOOR ZIJN ID
+        style: "ice-style",
+        localTime: "Austin, TX (GMT-6)"
     }
 };
 
@@ -43,215 +44,105 @@ let currentProfileKey = "byte";
 let currentGalleryIndex = 0;
 let currentThoughtIndex = 0;
 
-// --- CORE FUNCTIONS ---
-
 async function updateStatus() {
     const profile = PROFILES[currentProfileKey];
-    const LANYARD_URL = `https://api.lanyard.rest/v1/users/${profile.discordId}`;
-    
+    const textElement = document.getElementById('discord-status-text');
+    const dot = document.getElementById('status-dot');
+    const label = document.getElementById('status-label');
+    const statusBox = document.querySelector('.status-box');
+
     try {
-        const response = await fetch(LANYARD_URL);
+        const response = await fetch(`https://api.lanyard.rest/v1/users/${profile.discordId}`);
         const json = await response.json();
-        const dot = document.getElementById('status-dot');
-        const text = document.getElementById('discord-status-text');
-        const label = document.getElementById('status-label');
-        const statusBox = document.querySelector('.status-box');
 
         if (json.success) {
             const data = json.data;
             const status = data.discord_status;
-            // Kleuren voor de status indicators
             const colors = { online: '#43b581', idle: '#faa61a', dnd: '#f04747', offline: '#747f8d' };
-            const currentColor = colors[status] || colors.offline;
+            
+            dot.style.backgroundColor = colors[status] || colors.offline;
+            label.textContent = status.toUpperCase();
 
-            if (dot) {
-                dot.style.backgroundColor = currentColor;
-                dot.style.boxShadow = `0 0 10px ${currentColor}`;
-            }
-            if (label) label.textContent = status.toUpperCase();
-
-            if (text) {
-                text.classList.add('fade-out');
-                setTimeout(() => {
-                    // Spotify Logica
-                    if (data.listening_to_spotify && data.spotify) {
-                        text.textContent = `Listening to ${data.spotify.song} by ${data.spotify.artist}`;
-                        if (statusBox) {
-                            // Achtergrond met album art, aangepast voor leesbaarheid
-                            statusBox.style.backgroundImage = `linear-gradient(rgba(10, 20, 30, 0.9), rgba(10, 20, 30, 0.9)), url('${data.spotify.album_art_url}')`;
-                            statusBox.style.backgroundSize = 'cover';
-                            statusBox.classList.add('is-listening');
-                            statusBox.onclick = () => window.open(`https://open.spotify.com/track/${data.spotify.track_id}`, '_blank');
-                        }
-                    } else {
-                        // Geen Spotify
-                        if (statusBox) {
-                            statusBox.style.backgroundImage = 'none';
-                            statusBox.classList.remove('is-listening');
-                            statusBox.onclick = null;
-                        }
-                        const custom = data.activities.find(a => a.type === 4);
-                        // Gebruik de Discord bio info als status als er geen custom status is
-                        if (currentProfileKey === 'squeakers' && (!custom || !custom.state)) {
-                            text.textContent = '"26 He/Him Texas"'; // Directe tekst van image_0.png
-                        } else {
-                            text.textContent = (custom && custom.state) ? `"${custom.state}"` : "Expert at doing nothing.";
-                        }
-                    }
-                    text.classList.remove('fade-out');
-                }, 400);
+            if (data.listening_to_spotify && data.spotify) {
+                textElement.textContent = `Listening to ${data.spotify.song}`;
+                statusBox.style.backgroundImage = `linear-gradient(rgba(10, 20, 30, 0.85), rgba(10, 20, 30, 0.85)), url('${data.spotify.album_art_url}')`;
+                statusBox.style.backgroundSize = 'cover';
+            } else {
+                statusBox.style.backgroundImage = 'none';
+                const custom = data.activities.find(a => a.type === 4);
+                textElement.textContent = (custom && custom.state) ? `"${custom.state}"` : profile.vibe;
             }
         }
-    } catch (e) { 
-        console.error("Lanyard Error:", e);
-        // Fallback voor status tekst
-        if (currentProfileKey === 'squeakers') {
-            document.getElementById('discord-status-text').textContent = '"26 He/Him Texas"';
-        }
+    } catch (e) {
+        textElement.textContent = "Offline or API Error";
     }
 }
 
 function updateClock() {
-    const profile = PROFILES[currentProfileKey];
-    // Gebruik Amsterdam voor Byte, Austin voor Squeakers
     const timeZone = (currentProfileKey === 'byte') ? 'Europe/Amsterdam' : 'America/Chicago';
-    
     const now = new Date();
-    const options24 = { timeZone: timeZone, hour12: false, hour: '2-digit', minute: '2-digit' };
-    const options12 = { timeZone: timeZone, hour12: true, hour: '2-digit', minute: '2-digit' };
     
-    // en-GB voor 24u formaat, en-US voor 12u AM/PM formaat
-    const time24 = new Intl.DateTimeFormat('en-GB', options24).format(now);
-    const time12 = new Intl.DateTimeFormat('en-US', options12).format(now);
+    const time24 = new Intl.DateTimeFormat('en-GB', { timeZone, hour12: false, hour: '2-digit', minute: '2-digit' }).format(now);
+    const time12 = new Intl.DateTimeFormat('en-US', { timeZone, hour12: true, hour: '2-digit', minute: '2-digit' }).format(now);
     
-    const clock24 = document.getElementById('clock-24');
-    const clock12 = document.getElementById('clock-12');
-    
-    if (clock24) clock24.innerHTML = time24.replace(':', '<span>:</span>');
-    if (clock12) clock12.textContent = time12;
+    document.getElementById('clock-24').innerHTML = time24.replace(':', '<span>:</span>');
+    document.getElementById('clock-12').textContent = time12;
 }
-
-function cycleGallery() {
-    const galleryTarget = document.getElementById('gallery-target');
-    const images = PROFILES[currentProfileKey].images;
-    if (!galleryTarget || images.length <= 1) return;
-
-    galleryTarget.classList.add('fade-out');
-    setTimeout(() => {
-        currentGalleryIndex = (currentGalleryIndex + 1) % images.length;
-        galleryTarget.src = images[currentGalleryIndex];
-        galleryTarget.onload = () => galleryTarget.classList.remove('fade-out');
-    }, 500);
-}
-
-function cycleThoughts() {
-    const quoteTarget = document.getElementById('quote-target');
-    const thoughts = PROFILES[currentProfileKey].thoughts;
-    if (!quoteTarget || thoughts.length <= 1) return;
-
-    quoteTarget.classList.add('fade-out');
-    setTimeout(() => {
-        currentThoughtIndex = (currentThoughtIndex + 1) % thoughts.length;
-        quoteTarget.textContent = thoughts[currentThoughtIndex];
-        quoteTarget.classList.remove('fade-out');
-    }, 500);
-}
-
-// --- PROFILE SWITCHER LOGIC ---
 
 function switchProfile() {
     currentProfileKey = (currentProfileKey === "byte") ? "squeakers" : "byte";
     const data = PROFILES[currentProfileKey];
     const body = document.body;
 
-    // 1. Update Teksten & Afbeeldingen
     document.getElementById('profile-name').textContent = data.name;
     document.getElementById('profile-pronouns').textContent = data.pronouns;
     document.getElementById('profile-vibe').textContent = data.vibe;
-    document.getElementById('quote-author').textContent = `— ${data.name.split(' ')[0]}`; // pakt OmgItz of Byte
+    document.getElementById('quote-author').textContent = `— ${data.name.split(' ')[0]}`;
     document.getElementById('profile-main-img').src = data.mainImg;
-    
-    // Update Locatie tekst onder klok
-    const locationText = document.getElementById('location-text');
-    if (locationText) locationText.textContent = data.localTime || "Amsterdam, NL (GMT+1)";
-
-    // 2. Reset Gallery & Thoughts
-    currentGalleryIndex = 0;
-    currentThoughtIndex = 0;
+    document.getElementById('location-text').textContent = data.localTime;
     document.getElementById('gallery-target').src = data.images[0];
     document.getElementById('quote-target').textContent = data.thoughts[0];
 
-    // 3. Update Kleur & Stijl (Dit is de belangrijkste verandering!)
-    // Verander eerst de achtergrondsfeer, DAN de class
     if (data.style === "ice-style") {
-        switchBackgroundAnimation('snow');
-        body.classList.add('ice-style'); // Activeert CSS ijzige stijlen
-        document.documentElement.style.setProperty('--accent-glow', data.accent); // Neon Cyaan
+        body.classList.add('ice-style');
+        document.getElementById('bubble-container').style.display = 'none';
+        document.getElementById('snow-container').style.display = 'block';
+        createSnowflakes();
     } else {
-        switchBackgroundAnimation('bubbles');
-        body.classList.remove('ice-style'); // Terug naar paars
-        document.documentElement.style.setProperty('--accent-glow', data.accent); // Paars
+        body.classList.remove('ice-style');
+        document.getElementById('bubble-container').style.display = 'block';
+        document.getElementById('snow-container').style.display = 'none';
     }
 
-    // 4. Refresh Discord Status
+    document.documentElement.style.setProperty('--accent-glow', data.accent);
     updateStatus();
+    updateClock();
 }
 
-// Hulpfunctie om achtergrondsfeer te wisselen
-function switchBackgroundAnimation(type) {
-    const bubbleContainer = document.getElementById('bubble-container');
-    const snowContainer = document.getElementById('snow-container');
-
-    if (type === 'snow') {
-        // Schakel Byte's bubbels uit
-        if (bubbleContainer) bubbleContainer.style.display = 'none';
-        
-        // Schakel Squeakers sneeuw in
-        if (snowContainer) {
-            snowContainer.style.display = 'block';
-            createSnowflakes(); // Voegt sneeuwvlokken toe als ze er nog niet zijn
-        }
-    } else {
-        // Schakel Byte's bubbels in
-        if (bubbleContainer) bubbleContainer.style.display = 'block';
-        
-        // Schakel Squeakers sneeuw uit
-        if (snowContainer) snowContainer.style.display = 'none';
-    }
-}
-
-// Genereert sneeuwvlokken via JS voor betere controle over animatie
 function createSnowflakes() {
     const container = document.getElementById('snow-container');
-    if (container.children.length > 0) return; // Maak ze niet dubbel aan
+    if (container.children.length > 0) return;
 
-    const numberOfSnowflakes = 50;
-    for (let i = 0; i < numberOfSnowflakes; i++) {
+    for (let i = 0; i < 50; i++) {
         const snowflake = document.createElement('div');
         snowflake.classList.add('snowflake');
-        
-        // Random grootte, positie en snelheid
-        const size = Math.random() * 5 + 2 + 'px';
-        const left = Math.random() * 100 + '%';
-        const delay = Math.random() * 20 + 's';
-        const duration = Math.random() * 10 + 5 + 's';
-
-        snowflake.style.width = size;
-        snowflake.style.height = size;
-        snowflake.style.left = left;
-        snowflake.style.animationDelay = delay;
-        snowflake.style.animationDuration = duration;
-
+        snowflake.style.left = Math.random() * 100 + '%';
+        snowflake.style.width = snowflake.style.height = (Math.random() * 4 + 2) + 'px';
+        snowflake.style.animationDuration = (Math.random() * 5 + 5) + 's';
+        snowflake.style.animationDelay = Math.random() * 5 + 's';
         container.appendChild(snowflake);
     }
 }
 
-// --- INITIALIZE ---
-document.getElementById('profile-toggle').addEventListener('click', switchProfile);
+// Gallery & Thoughts cyclers
+setInterval(() => {
+    const images = PROFILES[currentProfileKey].images;
+    currentGalleryIndex = (currentGalleryIndex + 1) % images.length;
+    document.getElementById('gallery-target').src = images[currentGalleryIndex];
+}, 10000);
 
+document.getElementById('profile-toggle').addEventListener('click', switchProfile);
+setInterval(updateStatus, 15000);
+setInterval(updateClock, 1000);
 updateStatus();
-setInterval(updateStatus, 15000); // Check status elke 15s
 updateClock();
-setInterval(updateClock, 1000); // Check klok elke 1s
-setInterval(cycleGallery, 10000); // Gallery elke 10s
-setInterval(cycleThoughts, 20000); // Thoughts elke 20s
