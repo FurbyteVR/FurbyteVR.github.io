@@ -172,7 +172,8 @@ function switchProfile() {
     document.getElementById('profile-main-img').src = data.mainImg;
     
     // Update Locatie tekst onder klok
-    document.querySelector('.extra-box .subtext').textContent = data.localTime || "Amsterdam, NL (GMT+1)";
+    const locationText = document.getElementById('location-text');
+    if (locationText) locationText.textContent = data.localTime || "Amsterdam, NL (GMT+1)";
 
     // 2. Reset Gallery & Thoughts
     currentGalleryIndex = 0;
@@ -181,14 +182,15 @@ function switchProfile() {
     document.getElementById('quote-target').textContent = data.thoughts[0];
 
     // 3. Update Kleur & Stijl (Dit is de belangrijkste verandering!)
+    // Verander eerst de achtergrondsfeer, DAN de class
     if (data.style === "ice-style") {
+        switchBackgroundAnimation('snow');
         body.classList.add('ice-style'); // Activeert CSS ijzige stijlen
         document.documentElement.style.setProperty('--accent-glow', data.accent); // Neon Cyaan
-        switchBackgroundAnimation('snow');
     } else {
+        switchBackgroundAnimation('bubbles');
         body.classList.remove('ice-style'); // Terug naar paars
         document.documentElement.style.setProperty('--accent-glow', data.accent); // Paars
-        switchBackgroundAnimation('bubbles');
     }
 
     // 4. Refresh Discord Status
