@@ -1,5 +1,4 @@
 const DISCORD_USER_ID = "416887610233847820"; 
-// LET OP: Gebruik hieronder de backticks (onder de Esc-toets)
 const LANYARD_URL = `https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`;
 
 async function updateStatus() {
@@ -11,10 +10,12 @@ async function updateStatus() {
         const text = document.getElementById('discord-status-text');
         const label = document.getElementById('status-label');
 
+        if (!dot ||!text ||!label) return;
+
         // Check of Lanyard de user al volgt
         if (data.error && data.error.code === "user_not_monitored") {
-            text.textContent = "Server fix needed";
-            label.textContent = "Join Lanyard Discord Server";
+            text.textContent = "Lanyard server check...";
+            label.textContent = "JOIN LANYARD DISCORD";
             dot.style.backgroundColor = "#ff4747"; 
             return;
         }
@@ -28,7 +29,9 @@ async function updateStatus() {
                 offline: '#747f8d'
             };
 
-            // Hier stond eerst een fout met een afgebroken regel
+            // FIX: De pipes |
+
+| staan nu weer netjes op één regel
             const currentColor = colors[status] |
 
 | colors.offline;
@@ -36,16 +39,20 @@ async function updateStatus() {
             dot.style.boxShadow = `0 0 15px ${currentColor}`;
             label.textContent = status.toUpperCase();
 
-            // Custom status check (bijv. "Vibing in my bubble")
+            // Zoek naar custom status of Spotify
             const custom = data.data.activities.find(a => a.type === 4);
-            text.textContent = custom? `"${custom.state}"` : "Expert at doing nothing.";
+            if (custom && custom.state) {
+                text.textContent = `"${custom.state}"`;
+            } else if (data.data.listening_to_spotify) {
+                text.textContent = `Listening to ${data.data.spotify.song}`;
+            } else {
+                text.textContent = "Expert at doing nothing.";
+            }
         }
     } catch (e) {
         console.error("Lanyard error:", e);
     }
 }
 
-// Start de check
 updateStatus();
-// Ververs elke 15 seconden
 setInterval(updateStatus, 15000);
