@@ -132,11 +132,25 @@ h2 { font-size: 1.1rem; color: var(--accent-glow); margin-bottom: 12px; text-tra
     user-select: none;
 }
 @keyframes snowDrift {
-    0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
-    5%   { opacity: 1; }
-    50%  { transform: translateY(-55vh) translateX(25px) rotate(180deg); }
-    95%  { opacity: 0.4; }
-    100% { transform: translateY(-115vh) translateX(-15px) rotate(360deg); opacity: 0; }
+    0%   { 
+        transform: translateY(-10vh) translateX(0) rotate(0deg); 
+        opacity: 0; 
+    }
+    5%   { 
+        opacity: 1; 
+    }
+    50%  { 
+        /* Positieve waarde laat de vlok zakken */
+        transform: translateY(50vh) translateX(25px) rotate(180deg); 
+    }
+    95%  { 
+        opacity: 0.4; 
+    }
+    100% { 
+        /* Eindigt ruim onder de onderkant van het scherm */
+        transform: translateY(110vh) translateX(-15px) rotate(360deg); 
+        opacity: 0; 
+    }
 }
 
 html, body { -webkit-user-select: none; -ms-user-select: none; user-select: none; }
